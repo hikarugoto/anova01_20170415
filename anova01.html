@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rの操作復習と簡単な分散分析</title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="anova01_files/rmdshower/node_modules/shower-ribbon/styles/screen-4x3.css">
+  <link rel="stylesheet" href="anova01_files/rmdshower/package/styles/screen-4x3.css">
+  <link rel="stylesheet" href="anova01_files/rmdshower/style-common.css">
+  <link rel="stylesheet" href="anova01_files/rmdshower/style-ribbon.css">
+  <link rel="stylesheet" href="anova01_files/rmdshower/style-override.css">
+  
+  
+    <style type="text/css">
+   div.sourceCode { overflow-x: auto; }
+   table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+     margin: 0; padding: 0; vertical-align: baseline; border: none; }
+   table.sourceCode { width: 100%; line-height: 100%; }
+   td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+   td.sourceCode { padding-left: 5px; }
+   code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+   code > span.dt { color: #902000; } /* DataType */
+   code > span.dv { color: #40a070; } /* DecVal */
+   code > span.bn { color: #40a070; } /* BaseN */
+   code > span.fl { color: #40a070; } /* Float */
+   code > span.ch { color: #4070a0; } /* Char */
+   code > span.st { color: #4070a0; } /* String */
+   code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+   code > span.ot { color: #007020; } /* Other */
+   code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+   code > span.fu { color: #06287e; } /* Function */
+   code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+   code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+   code > span.cn { color: #880000; } /* Constant */
+   code > span.sc { color: #4070a0; } /* SpecialChar */
+   code > span.vs { color: #4070a0; } /* VerbatimString */
+   code > span.ss { color: #bb6688; } /* SpecialString */
+   code > span.im { } /* Import */
+   code > span.va { color: #19177c; } /* Variable */
+   code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+   code > span.op { color: #666666; } /* Operator */
+   code > span.bu { } /* BuiltIn */
+   code > span.ex { } /* Extension */
+   code > span.pp { color: #bc7a00; } /* Preprocessor */
+   code > span.at { color: #7d9029; } /* Attribute */
+   code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+   code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+   code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+   code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  
+  
+  
+</head>
+
+<body class="shower list">
+
+  <header class="caption">
+    <h1>Rの操作復習と簡単な分散分析</h1>
+    <p>Hikaru GOTO</p>
+  </header>
+
+    
+  
+<section class="slide level2">
+<h2>ゼミ前勉強会</h2>
+<div>
+<center>
+<em>統計学エンドユーザーのための分散分析（1）</em><br />
+<em>2017年4月15日（土）</em>
+</center>
+</div>
+</section>
+<section class="slide level2">
+<h2>勉強会の目的</h2>
+<p>1.　統計学エンドユーザーが知っておいたほうがいい手法を身につける。</p>
+<p>2.　量的分析を使った研究が理解できるようになる。</p>
+<p>3.　Rを使った量的分析ができるようになる。</p>
+</section>
+<section class="slide level2">
+<h2>今日の内容</h2>
+<ul>
+<li>（復習）R の機能追加と呼び出し</li>
+<li>（復習）データの読み込み方</li>
+<li>tidy なデータとデータの型</li>
+<li>一元配置の分散分析（一要因の分散分析）</li>
+<li>練習問題</li>
+</ul>
+</section>
+<section id="r-" class="slide level2">
+<h2>R の機能追加と呼び出し</h2>
+<ul>
+<li>R はベースのままでもいろいろできる。</li>
+<li>機能追加でもっとできるようになる。</li>
+<li>スマホのアプリ追加みたいなもの。</li>
+<li>「アプリをインストール→タップして使う」に似てる。</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>例）“car”パッケージをインストールして使えるようにするには。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;car&quot;</span>)
+<span class="kw">library</span>(car)</code></pre></div>
+<ul>
+<li>全部入力しなくも，途中で tab キーで入力補完。</li>
+<li>intall.packages は ”” が必要。library 時は不要。</li>
+<li>インストールは1度だけでOK。</li>
+<li>RStudio を終了して，また起動した時に呼び出す必要あり。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(car)  <span class="co"># 全部半角英数。スペルミスに注意。</span></code></pre></div>
+<ul>
+<li>分析する時の「ルーチン（by 五郎丸）」だと思おう！</li>
+</ul>
+</section>
+<section class="slide level2">
+<h2>データの読み込み方</h2>
+<div class="double">
+<p class="double-flow">
+<ul>
+<li>便利な「プロジェクト」</li>
+</ul>
+<p><img src="cre-pro.png" /></p>
+<ul>
+<li>RStudio の右側にある。</li>
+<li>フォルダ名には日本語を使わない。</li>
+<li>分析データをプロジェクトのフォルダに入れておく。</li>
+<li>その他，いろいろ入れておくと便利。</li>
+</ul>
+</p>
+</div>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>データは基本，CSV かタブ区切りのテキストで。</li>
+<li>RStudio を使って GUI で読み込むのが便利。</li>
+<li>右上の「Import Dataset」をクリック。</li>
+</ul>
+<p><img src="imp-data.png" /></p>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Browse でデータを選ぶ。</li>
+<li>プレビューで確認。</li>
+<li>オプションは元データによって変わる。</li>
+</ul>
+<p><img src="imp-opt.png" /></p>
+<ul>
+<li>OKなら右下の Import</li>
+</ul>
+</section>
+<section class="titleslide slide level1"><h2 class="shout">やってみよう</h2></section><section class="slide level2">
+<h2>データのインポートの練習</h2>
+<ol type="1">
+<li>プロジェクト（プロジェク名は半角英数）を作成し，</li>
+<li>そこに reidai.csv を入れて，</li>
+<li>reidai.csv を読み込む。</li>
+</ol>
+</section><section class="slide level2">
+<h2>データには型がある</h2>
+<ul>
+<li>データの型はとても重要！</li>
+<li>有名なアイリス iris データで確認。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(iris)</code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</section><section class="slide level2">
+
+<ul>
+<li>Titanic データで確認。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(Titanic)</code></pre></div>
+<pre><code>##  table [1:4, 1:2, 1:2, 1:2] 0 0 35 0 0 0 17 0 118 154 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 4
+##   ..$ Class   : chr [1:4] &quot;1st&quot; &quot;2nd&quot; &quot;3rd&quot; &quot;Crew&quot;
+##   ..$ Sex     : chr [1:2] &quot;Male&quot; &quot;Female&quot;
+##   ..$ Age     : chr [1:2] &quot;Child&quot; &quot;Adult&quot;
+##   ..$ Survived: chr [1:2] &quot;No&quot; &quot;Yes&quot;</code></pre>
+<ul>
+<li>インポートした reidai データを確認してください。</li>
+</ul>
+</section><section class="slide level2">
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(reidai)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    400 obs. of  13 variables:
+##  $ id         : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ nendai     : chr  &quot;10dai&quot; &quot;10dai&quot; &quot;10dai&quot; &quot;10dai&quot; ...
+##  $ sex        : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ age        : int  19 18 16 16 16 17 17 19 19 17 ...
+##  $ income     : int  1 12 12 12 5 1 12 1 12 1 ...
+##  $ marriage   : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ family     : int  1 2 2 2 2 2 2 2 2 2 ...
+##  $ syoku_kenko: int  4 2 3 4 3 5 2 4 3 3 ...
+##  $ tyoshoku   : int  4 3 4 4 4 4 2 2 1 4 ...
+##  $ gaisyoku1  : int  3 4 3 3 3 3 4 4 3 2 ...
+##  $ gaisyoku2  : int  4 5 4 4 4 5 5 4 5 3 ...
+##  $ jitaku_cook: int  4 3 0 3 0 5 0 1 0 2 ...
+##  $ tokui      : int  3 2 NA 2 NA 1 NA NA NA 2 ...
+##  - attr(*, &quot;spec&quot;)=List of 2
+##   ..$ cols   :List of 13
+##   .. ..$ id         : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ nendai     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ sex        : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ age        : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ income     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ marriage   : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ family     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ syoku_kenko: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ tyoshoku   : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ gaisyoku1  : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ gaisyoku2  : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ jitaku_cook: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ tokui      : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   ..$ default: list()
+##   .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_guess&quot; &quot;collector&quot;
+##   ..- attr(*, &quot;class&quot;)= chr &quot;col_spec&quot;</code></pre>
+</section><section class="slide level2">
+
+<ul>
+<li>列（縦）が変数。1列に1変数。</li>
+<li>行（横）が観測。1人のデータが1行に入っている。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(reidai)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(reidai, <span class="dv">3</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 × 13
+##      id nendai   sex   age income marriage family syoku_kenko tyoshoku
+##   &lt;int&gt;  &lt;chr&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;    &lt;int&gt;  &lt;int&gt;       &lt;int&gt;    &lt;int&gt;
+## 1     1  10dai     1    19      1        1      1           4        4
+## 2     2  10dai     1    18     12        1      2           2        3
+## 3     3  10dai     1    16     12        1      2           3        4
+## # ... with 4 more variables: gaisyoku1 &lt;int&gt;, gaisyoku2 &lt;int&gt;,
+## #   jitaku_cook &lt;int&gt;, tokui &lt;int&gt;</code></pre>
+<ul>
+<li>これが「tidy なデータ」。</li>
+</ul>
+</section><section class="slide level2">
+
+<ul>
+<li>分析前のデータはエクセルで作ることが多い。</li>
+<li>tidy なデータセットを作るように心がける。</li>
+<li>だいたいのエラーは分析データの不備やデータの型のまちがい。</li>
+</ul>
+</section><section class="slide level2">
+<h2>一元配置／一要因の分散分析</h2>
+<ul>
+<li>分散分析 Analysis of variance，略して ANOVA（あのーば）。</li>
+<li>R による分散分析はデータの型に気をつける。</li>
+<li>t 検定が2グループ，分散分析は3グループ（群）以上と言われる。</li>
+</ul>
+<p><em>ウソです。</em></p>
+<ul>
+<li>ANOVA は別に2群でもOK。ただ一般的には3群以上。</li>
+</ul>
+</section><section class="slide level2">
+<h2>応答変数と説明変数</h2>
+<ul>
+<li>年収は業種（X, Y, Z）ごとによって違うのかな？</li>
+<li>店舗の売り上げは立地（A, B, C, D）よって異なるのか？</li>
+</ul>
+<p>応答（従属）変数＝年収，店舗の売り上げ<br />
+説明（独立）変数＝業種（X, Y, Z），立地（A, B, C, D）</p>
+</section><section class="slide level2">
+<h2>分散分析とは</h2>
+<ul>
+<li>何らかの影響（効果）によって，それぞれの平均値が変わるかどうかを調べるのが分散分析<span class="citation" data-cites="baba2015">(馬場, 2015)</span>。</li>
+</ul>
+<p><img src="anova01_files/figure-revealjs/unnamed-chunk-9-1.png" width="768" /></p>
+</section><section class="slide level2">
+
+<p>業種Xの平均年収 ～ 全業種の平均年収＋業種Xの効果＋誤差X（残差）<br />
+業種Yの平均年収 ～ 全業種の平均年収＋業種Yの効果＋誤差Y（残差）<br />
+業種Zの平均年収 ～ 全業種の平均年収＋業種Zの効果＋誤差Z（残差）</p>
+<ul>
+<li>効果と残差をゴニョゴニョしてF値（F比）を出し，F検定を行って，p値を出して，有意かどうかを判断するのが分散分析。</li>
+<li>応答変数が正規分布に従い，等分散であることが前提<span class="citation" data-cites="rtoukei2017">(嶋田・阿部, 2017)</span>。</li>
+<li>１要因で３水準の分散分析。</li>
+</ul>
+</section><section id="-reidai-" class="slide level2">
+<h2>例題 reidai データを使った分散分析</h2>
+<ul>
+<li>婚姻状況によって，食生活の意識は上がるか？<span class="citation" data-cites="jisui">(“自炊と健康意識に関するアンケート調査|マーケティングリサーチ・市場調査のマーシュ,” n.d.)</span></li>
+</ul>
+<p><img src="anova01_files/figure-revealjs/unnamed-chunk-10-1.png" width="768" /></p>
+</section><section class="slide level2">
+
+<p>応答変数は食生活の意識，説明変数は婚姻状況</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw">lm</span>(syoku_kenko <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(marriage), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res)</code></pre></div>
+<ul>
+<li>エルエムかっこ，応答変数 にょろ 説明変数，データ。</li>
+<li>その結果をいったん res に格納して，続けて anova() で分析。</li>
+</ul>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: syoku_kenko
+##                   Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## factor(marriage)   3  25.06  8.3542  6.6708 0.0002106 ***
+## Residuals        396 495.93  1.2524                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</section><section class="slide level2">
+
+<p>「食生活の健康意識が婚姻状況によって異なるかを調べるために一要因の分散分析を行った。その結果、5%水準で有意であった（F(3, 396) = 6.67, p &lt; 0.01）。」<span class="citation" data-cites="oshio">(“中部大学小塩研究室のページ,” n.d.)</span></p>
+</section><section id="ng" class="slide level2">
+<h2>微妙に違いますが，↓の方法はNG。</h2>
+<ul>
+<li>先ほどとの違いがわかりますか？</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw">lm</span>(syoku_kenko <span class="op">~</span><span class="st"> </span>marriage, <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: syoku_kenko
+##            Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+## marriage    1   10.6 10.6017  8.2671 0.004254 **
+## Residuals 398  510.4  1.2824                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</section><section class="slide level2">
+
+<p><img src="anova01_files/figure-revealjs/unnamed-chunk-14-1.png" width="768" /></p>
+</section><section class="slide level2">
+
+<p><img src="anova01_files/figure-revealjs/unnamed-chunk-15-1.png" width="768" /></p>
+</section><section class="slide level2">
+
+<ul>
+<li>marriage は名義変数（ダミー変数）。</li>
+<li>分散分析のときは説明変数を因子型にする。</li>
+<li>as.factor または factor で因子型に変換できる。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw">lm</span>(syoku_kenko <span class="op">~</span><span class="st"> </span><span class="kw">as.factor</span>(marriage), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw">lm</span>(syoku_kenko <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(marriage), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res)</code></pre></div>
+<ul>
+<li>型をまちがえると，結果もまちがえる。</li>
+<li>分析前に str() で型をチェックしよう。</li>
+</ul>
+</section><section class="slide level2">
+<h2>私たちは何をやっているのか？</h2>
+<ul>
+<li>最近，Twitter の統計クラスタで人気になった図です（＠shigepong）。</li>
+</ul>
+<p><img src="toukei-setumei.jpg" /></p>
+</section>
+<section class="titleslide slide level1"><h2 class="shout">練習問題</h2></section><section id="reidai-" class="slide level2">
+<h2>reidai データで分散分析</h2>
+<ol type="1">
+<li>婚姻状況によって外食頻度（gaisyoku1）は異なりますか？</li>
+<li>家族との同居状態（family）によって，自炊の頻度（jitaku_cook）は異なりますか？</li>
+<li>年齢層（nendai）によって，食生活の意識（syoku_kenko）は異なりますか？</li>
+</ol>
+<ul>
+<li>余裕がある方は事前に送付したエクセルの質問対応表を見て，自由に問題を設定し，分散分析をしてください。</li>
+</ul>
+</section><section class="slide level2">
+
+<ul>
+<li>答え1</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res1 =<span class="st"> </span><span class="kw">lm</span>(gaisyoku1 <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(marriage), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res1)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: gaisyoku1
+##                   Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+## factor(marriage)   3  23.86  7.9534  4.2728 0.005506 **
+## Residuals        396 737.12  1.8614                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</section><section class="slide level2">
+
+<ul>
+<li>答え2</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res2 =<span class="st"> </span><span class="kw">lm</span>(jitaku_cook <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(family), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res2)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: jitaku_cook
+##                 Df  Sum Sq Mean Sq F value Pr(&gt;F)
+## factor(family)   2    6.96  3.4799  0.8691 0.4201
+## Residuals      397 1589.54  4.0039</code></pre>
+</section><section class="slide level2">
+
+<ul>
+<li>答え3</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res3 =<span class="st"> </span><span class="kw">lm</span>(syoku_kenko <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(nendai), <span class="dt">data =</span> reidai)
+<span class="kw">anova</span>(res3)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: syoku_kenko
+##                 Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## factor(nendai)   5  44.56  8.9114  7.3694 1.277e-06 ***
+## Residuals      394 476.44  1.2092                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</section><section class="slide level2">
+<h2>多重比較</h2>
+<ul>
+<li>問題3で年齢層によって，食生活意識の違いがわかった。</li>
+<li>さらに，各年代で（平均値の）違いを知りたい。どうする？</li>
+</ul>
+<p><img src="anova01_files/figure-revealjs/unnamed-chunk-21-1.png" width="768" /></p>
+</section><section class="slide level2">
+
+<ul>
+<li>aov() を使って分析した結果を TukeyHSD() に入れて多重比較する。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tajyu =<span class="st"> </span><span class="kw">aov</span>(syoku_kenko <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(nendai), <span class="dt">data =</span> reidai)
+<span class="kw">TukeyHSD</span>(tajyu)</code></pre></div>
+<ul>
+<li>anova() ではないので注意。</li>
+</ul>
+</section><section class="slide level2">
+
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = syoku_kenko ~ factor(nendai), data = reidai)
+## 
+## $`factor(nendai)`
+##                   diff         lwr       upr     p adj
+## 20dai-10dai 0.01666667 -0.55829452 0.5916279 0.9999994
+## 30dai-10dai 0.05714286 -0.49690361 0.6111893 0.9996974
+## 40dai-10dai 0.11428571 -0.43976075 0.6683322 0.9916230
+## 50dai-10dai 0.50000000 -0.05404646 1.0540465 0.1034992
+## 60dai-10dai 0.90000000  0.34595354 1.4540465 0.0000657
+## 30dai-20dai 0.04047619 -0.51357027 0.5945227 0.9999447
+## 40dai-20dai 0.09761905 -0.45642742 0.6516655 0.9959881
+## 50dai-20dai 0.48333333 -0.07071313 1.0373798 0.1270497
+## 60dai-20dai 0.88333333  0.32928687 1.4373798 0.0000969
+## 40dai-30dai 0.05714286 -0.47516777 0.5894535 0.9996319
+## 50dai-30dai 0.44285714 -0.08945348 0.9751678 0.1648768
+## 60dai-30dai 0.84285714  0.31054652 1.3751678 0.0001115
+## 50dai-40dai 0.38571429 -0.14659634 0.9180249 0.3025057
+## 60dai-40dai 0.78571429  0.25340366 1.3180249 0.0004206
+## 60dai-50dai 0.40000000 -0.13231062 0.9323106 0.2630214</code></pre>
+</section><section class="slide level2">
+
+<p>「食生活の健康意識が年齢層によって異なるか検討するため一要因の分散分析を行った。その結果、5%水準で有意であった（F(5, 394) = 7.37, p &lt;0.01）。さらに Tukey の HSD 法（5％水準）による多重比較を行ったところ，60代と10代，60代と20代，60代と30代，60代と40代の間でいずれも60代の平均値が有意に高かった。」</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(reidai<span class="op">$</span>syoku_kenko, reidai<span class="op">$</span>nendai, mean)</code></pre></div>
+<pre><code>##    10dai    20dai    30dai    40dai    50dai    60dai 
+## 3.600000 3.616667 3.657143 3.714286 4.100000 4.500000</code></pre>
+</section><section class="slide level2">
+
+<ul>
+<li>問題1で多重比較を行ってください。</li>
+</ul>
+</section><section class="slide level2">
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tajyu2 =<span class="st"> </span><span class="kw">aov</span>(gaisyoku1 <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(marriage), <span class="dt">data =</span> reidai)
+<span class="kw">TukeyHSD</span>(tajyu2)</code></pre></div>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = gaisyoku1 ~ factor(marriage), data = reidai)
+## 
+## $`factor(marriage)`
+##            diff        lwr        upr     p adj
+## 2-1 -0.61770245 -1.8204774  0.5850725 0.5475303
+## 3-1 -0.03357546 -0.3927413  0.3255903 0.9950611
+## 4-1 -2.31214689 -4.0918946 -0.5323992 0.0048616
+## 3-2  0.58412698 -0.6140664  1.7823204 0.5904297
+## 4-2 -1.69444444 -3.8096677  0.4207788 0.1658877
+## 4-3 -2.27857143 -4.0552261 -0.5019168 0.0056222</code></pre>
+</section><section class="slide level2">
+<h2>今日のまとめ</h2>
+<ul>
+<li>一元配置（一要因）の分散分析で3群以上の平均値の違いを調べられる。</li>
+<li>str() でデータの型を確認できる。</li>
+<li>lm() → anova() で分散分析</li>
+<li>aov() → TukeyHSD()で多重比較</li>
+<li>まず分散分析で有意差をチェックしてから、多重比較を行う。</li>
+</ul>
+</section><section class="slide level2">
+<h2>補足</h2>
+<ul>
+<li>分散分析にも効果量はあります（割愛）。</li>
+<li>どうしてもRのコマンドを打ち込むのがダメという方は「EZR」または「Rコマンダー」で検索。</li>
+<li>書籍も出ています。</li>
+<li>次回，Rコマンダーを使います。</li>
+</ul>
+</section>
+<section class="titleslide slide level1"><h2 class="shout">次回予告</h2></section><section class="slide level2">
+
+<ul>
+<li>2要因の分散分析</li>
+<li>複数の要因が関係したらどうなるか？<br />
+</li>
+<li>キーワードは交互作用（interaction）。</li>
+</ul>
+</section><section id="references" class="slide level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-oshio">
+<p>中部大学小塩研究室のページ. (n.d.). Retrieved April 8, 2017, from <a href="http://psy.isc.chubu.ac.jp/~oshiolab/teaching_folder/data_b/04/04.html" class="uri">http://psy.isc.chubu.ac.jp/~oshiolab/teaching_folder/data_b/04/04.html</a></p>
+</div>
+<div id="ref-rtoukei2017">
+<p>嶋田・阿部. (2017). <em>Rで学ぶ統計学入門</em>. 東京化学同人.</p>
+</div>
+<div id="ref-jisui">
+<p>自炊と健康意識に関するアンケート調査|マーケティングリサーチ・市場調査のマーシュ. (n.d.). Retrieved April 8, 2017, from <a href="https://www.marsh-research.co.jp/examine/2809jisui.html" class="uri">https://www.marsh-research.co.jp/examine/2809jisui.html</a></p>
+</div>
+<div id="ref-baba2015">
+<p>馬場. (2015). <em>平均・分散から始める一般化線形モデル入門</em>. プレアデス出版.</p>
+</div>
+</div>
+</section>
+
+  <!--
+  To hide progress bar from entire presentation
+  just remove “progress” element.
+  -->
+  <!-- <div class="progress"></div> -->
+  <script src="anova01_files/rmdshower/node_modules/shower/node_modules/shower-core/shower.min.js"></script>
+  <!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+  <!-- Photos by John Carey, fiftyfootshadows.net -->
+
+  
+  
+</body>
+</html>
